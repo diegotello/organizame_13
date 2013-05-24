@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <title>Organizame</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="<?php echo $this->baseUrl('img/icon.gif') ?>">
+	<link href="<?php echo $this->baseUrl('css/bootstrap-responsive.min.css') ?>" rel="stylesheet">
+    <link href="<?php echo $this->baseUrl('css/bootstrap.min.css') ?>" rel="stylesheet">
+    <link href="<?php echo $this->baseUrl('css/custom/jquery-ui-1.9.0.custom.min.css')?>" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUrl('css/flexigrid.pack.css')?>" />
+	<style type="text/css">
+      #view-content { margin-top: 50px}
+      html { height: 100%; width: 100% }
+      body { font-family: sans-serif; font-size: 14px; height: 100%;}
+      #map_canvas {height: 100%}
+    </style>
+  </head>
+
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+          <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="/index">organiza.me</a>
+            <div class="btn-group pull-right">
+              <?php echo $this->loggedInAs(); ?>
+              <?php 
+                $auth = Zend_Auth::getInstance();
+                if (!$auth->hasIdentity())
+                    echo '<a class="btn btn-primary" href="/user/create"><i class="icon-asterisk icon-white"></i>Registrarse</a>';
+              ?>
+            </div>
+            <div class="nav-collapse">
+              <ul class="nav">
+                <?php 
+                $auth = Zend_Auth::getInstance();
+                if ($auth->hasIdentity())
+                    echo '
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown">Cronograma<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown">
+                                    <a href="/home">Ver Cronograma</a>
+                                </li>                               
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Actividades<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown">
+                                    <a href="/activity">Crear</a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="/activity/list">Ver</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Lugares<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown">
+                                    <a href="/place">Crear</a>
+                                </li>
+                            </ul>
+                        </li>';
+              ?>
+                <li><a href="#" id="about">Acerca de</a></li>
+                <li><a href="#" id="contact">Contactos</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
+      </div>
+    </div>
+    <?php echo $this->layout()->content; ?>
+    <div class="container span12">
+        <footer>
+            <p>&copy; 2012 DTAD Inc</p>
+        </footer>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        window.jQuery || document.write('<script src="<?php echo $this->baseUrl("js/jquery.min.js") ?>"><\/script>');
+    </script>
+    <script src="<?php echo $this->baseUrl('js/bootstrap.min.js') ?>"></script>
+    <script src="<?php echo $this->baseUrl('js/jquery-ui-1.9.0.custom.min.js') ?>"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDeQNDt_4qPjHxAG_c7oD9kSdU82BXwMIE&sensor=false&libraries=places"></script>
+    <script type="text/javascript" src="<?php echo $this->baseUrl('js/geometa.js')?>"></script>
+    <script type="text/javascript" src="<?php echo $this->baseUrl('js/highcharts.js')?>"></script>     
+    <script type="text/javascript" src="<?php echo $this->baseUrl('js/flexigrid.pack.js')?>"></script>
+    <?php echo $this->headScript(); ?>
+    <script>
+	$(function() {		
+		$( "#aboutdialog" ).dialog({
+			autoOpen: false,
+			width: 400,
+			buttons: [
+				{
+					text: "Ok",
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			]
+		});
+
+		// Link to open the dialog
+		$( "#about" ).click(function( event ) {
+			$( "#aboutdialog" ).dialog( "open" );
+			event.preventDefault();
+		});
+        
+        $( "#contactdialog" ).dialog({
+			autoOpen: false,
+			width: 400,
+			buttons: [
+				{
+					text: "Ok",
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			]
+		});
+
+		// Link to open the dialog
+		$( "#contact" ).click(function( event ) {
+			$( "#contactdialog" ).dialog( "open" );
+			event.preventDefault();
+		});
+	});
+	</script>
+    <div id="aboutdialog" title="Acerca de Organizame">
+        <p>Organizame tiene como objetivo ayudarte a ser eficiente planificando tus actividades diarias, la precisión de las predicciones dependerá de tu responsabilidad 
+           al tomar mediciones. </br>Gracias por utilizar esta herramienta. </br>Esperamos simplificar tu vida.</p>
+    </div>
+    <div id="contactdialog" title="Contactanos">
+        <p><b>aliciadelcid1@gmail.com</br>dietello1@gmail.com</b></p>
+    </div>
+  </body>
+</html>

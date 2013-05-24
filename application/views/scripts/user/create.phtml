@@ -1,0 +1,23 @@
+<div id="view-content">  
+    <h3>Busca tu casa:</h3>
+    <h6>Organizame guarda las coordenadas de tu hogar, esta informacion es privada.</h6>
+</div>
+<?php
+     $view = new Zend_View();
+     $view->addScriptPath(APPLICATION_PATH.'/views/');
+     echo $view->render('map.php');
+?>
+<div class="span6">
+    <?php echo $this->form;?>
+</div>
+<?php $this->headScript()->captureStart();?>
+function getLat(){
+    document.forms['newuserform'].elements["lat"].value=document.forms['mapform'].elements["lat"].value;
+}
+function getLong(){
+    document.forms['newuserform'].elements["long"].value=document.forms['mapform'].elements["long"].value;
+}
+function getMapAddress(){
+    console.log(document.forms['mapform'].elements["mapaddress"].value);
+}
+<?php $this->headScript()->captureEnd(); ?>

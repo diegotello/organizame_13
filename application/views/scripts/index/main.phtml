@@ -1,0 +1,504 @@
+<div class="container-fluid" id="view-content">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <ul class="nav">
+                <li class="span1">
+                </li>
+                <li>                    
+                    <div class="btn-group" align="center">
+                        <h5>Actividades</h5>
+                        <button class="btn" id="terminadas_btn">Terminadas</button>
+                        <button class="btn  btn-primary" id="corriente_btn">Actual</button>
+                        <button class="btn" id="pendientes_btn">Pendientes</button>
+                    </div>
+                </li>
+                <li class="span1">
+                </li>
+                <li>
+                    <div class="btn-group" align="center">  
+                        <h5>Agregar</h5>
+                        <button class="btn" id="get_activity">Actividad</button>
+                        <button class="btn" id="get_block">Bloque</button>
+                        <button class="btn" id="get_route">Ruta</button>
+                    </div>
+                </li>
+                <li class="span1">
+                </li>
+                <li>
+                     <div class="btn-group" align="center">  
+                        <h5>Graficos</h5>
+                        <button class="btn" id="compare_chart_btn">Comparar comportamiento</button>
+                        <button class="btn" id="day_chart_btn">Avance del dia</button>
+                        <button class="btn btn-inverse" id="hide_chart_btn">Ocultar</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row-fluid" align="center" id="compare_chart_div">        
+        <div class="well span12" id="chart" style="height: 300px;" align="center">
+        </div>
+    </div>
+    <div class="row-fluid" align="center" id="day_chart_div">
+        <div class="well span12" id="chart2" style="height: 300px;" align="center">
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="well span6" id="main" align="center">            
+            <div id="terminadas">
+                <?php echo $this->past_accordion;?>
+            </div>
+            <div id="corriente">
+                <?php echo $this->present_accordion;?>
+            </div>
+            <div id="pendientes">
+                <?php echo $this->future_accordion;?>
+            </div>            
+        </div>
+        <div class="well span6" id="select_dialog" align="center">
+        </div>
+    </div>
+</div>
+
+<?php $this->headScript()->captureStart();?>
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'chart'
+            },
+            title: {
+                text: 'Aqui puedes comparar tu comportamiento'
+            },
+            xAxis: {
+                categories: <?php echo $this->categories1; ?>
+            },
+            yAxis:{
+                title: {
+                    text: 'Tiempo'
+                }
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: true
+                }
+            },
+            series: [{
+                name: 'Estimado',
+                type: 'column',
+                data: <?php echo $this->estimado1;?>
+            }, {
+                name: 'Realidad',
+                type: 'column',
+                data: <?php echo $this->real1;?>
+            }]
+        });
+        
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'chart2'
+            },
+            title: {
+                text: 'Aqui puedes observar tu avance de hoy'
+            },
+            xAxis: {
+                categories: <?php echo $this->categories1; ?>
+            },
+            yAxis:{
+                title: {
+                    text: 'Tiempo'
+                }
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: true
+                }
+            },
+            series: [{
+                name: 'Estimado',
+                type: 'spline',
+                data: <?php echo $this->estimado2;?>
+            }, {
+                name: 'Realidad',
+                type: 'spline',
+                data: <?php echo $this->real2;?>
+            }]
+        });
+    
+        $("#select_dialog").hide();
+        $("#compare_chart_div").hide();
+        $("#day_chart_div").hide();
+        $("#hide_chart_btn").hide();
+        configureAccordion("#past_accordion");
+        configureAccordion("#present_accordion");
+        configureAccordion("#future_accordion");
+        $("#pendientes").hide();
+        $("#corriente").show();
+        $("#terminadas").hide();
+        $("#pendientes_btn").click(function(event){            
+            $("#terminadas_btn").removeClass('btn-primary')
+            $("#corriente_btn").removeClass('btn-primary')
+            $("#pendientes_btn").addClass('btn-primary')
+            $("#pendientes").show()
+            $("#corriente").hide()
+            $("#terminadas").hide()
+        });
+        $("#corriente_btn").click(function(event){
+            $("#pendientes_btn").removeClass('btn-primary')
+            $("#corriente_btn").addClass('btn-primary')
+            $("#terminadas_btn").removeClass('btn-primary')
+            $("#pendientes").hide()
+            $("#corriente").show()
+            $("#terminadas").hide()
+        });
+        $("#terminadas_btn").click(function(event){
+            $("#pendientes_btn").removeClass('btn-primary')
+            $("#corriente_btn").removeClass('btn-primary')
+            $("#terminadas_btn").addClass('btn-primary')
+            $("#pendientes").hide()
+            $("#corriente").hide()
+            $("#terminadas").show()
+        });
+        $("#compare_chart_btn").click(function(event){
+            $("#compare_chart_div").show()
+            $("#day_chart_div").hide()
+            $("#hide_chart_btn").show()
+            $("#compare_chart_btn").addClass('btn-primary')
+            $("#day_chart_btn").removeClass('btn-primary')
+        });
+        $("#day_chart_btn").click(function(event){
+            $("#day_chart_div").show()
+            $("#compare_chart_div").hide()
+            $("#hide_chart_btn").show()
+            $("#compare_chart_btn").removeClass('btn-primary')
+            $("#day_chart_btn").addClass('btn-primary')
+        });
+        $("#hide_chart_btn").click(function(event){
+            $("#day_chart_div").hide()
+            $("#compare_chart_div").hide()
+            $("#hide_chart_btn").hide()
+            $("#compare_chart_btn").removeClass('btn-primary')
+            $("#day_chart_btn").removeClass('btn-primary')
+        });
+        $( "#get_activity" ).click(function( event ) {
+            $("#select_dialog").empty();
+            $("#get_activity").addClass('btn-primary')
+            $("#get_block").removeClass('btn-primary')
+            $("#get_route").removeClass('btn-primary')
+            $.ajax(
+                "/activity/getactivity",
+                {
+                    dataType: 'json',
+                    success: function(json)
+                        {
+                            $("#select_dialog")
+                            .append(
+                                $(document.createElement("ul"))
+                                    .attr({
+                                        'id':'select_activity_list',
+                                        'class':'nav nav-tabs nav-stacked'
+                                    })
+                            );
+                            $.each(json, function(i, value){
+                                $("#select_activity_list").append(
+                                    $(document.createElement("li"))
+                                        .append(
+                                            $(document.createElement("a"))
+                                                .attr({
+                                                    'href':'#',
+                                                    'class':'btn',
+                                                    'onClick':'addActivity('+value.id+')'
+                                                    })
+                                                .append(
+                                                    $(document.createElement("strong"))
+                                                        .text(value.name+" -> "+value.description)
+                                                )
+                                        )
+                                );
+                            });
+                        }
+                }
+            );
+            $("#select_dialog").show();
+		});
+        
+        $( "#get_block" ).click(function( event ) {
+            $("#select_dialog").empty();
+            $("#get_activity").removeClass('btn-primary')
+            $("#get_block").addClass('btn-primary')
+            $("#get_route").removeClass('btn-primary')
+            $.ajax(
+                "/activity/getblock",
+                {
+                    dataType: 'json',
+                    success: function(json)
+                        {
+                            $("#select_dialog")
+                            .append(
+                                $(document.createElement("ul"))
+                                    .attr({
+                                        'id':'select_activity_list',
+                                        'class':'nav nav-tabs nav-stacked'
+                                    })
+                            );
+                            $.each(json, function(i, value){
+                                $("#select_activity_list").append(
+                                    $(document.createElement("li"))
+                                        .append(
+                                            $(document.createElement("a"))
+                                                .attr({
+                                                    'href':'#',
+                                                    'class':'btn',
+                                                    'onClick':'addActivity('+value.id+')'
+                                                    })
+                                                .append(
+                                                    $(document.createElement("strong"))
+                                                        .text(value.name+" -> "+value.description)
+                                                )
+                                        )
+                                );
+                            });
+                        }
+                }
+            );
+            $("#select_dialog").show();
+		});
+        
+        $( "#get_route" ).click(function( event ) {
+            $("#select_dialog").empty();
+            $("#get_activity").removeClass('btn-primary')
+            $("#get_block").removeClass('btn-primary')
+            $("#get_route").addClass('btn-primary')
+            $.ajax(
+                "/activity/getroute",
+                {
+                    dataType: 'json',
+                    success: function(json)
+                        {
+                            $("#select_dialog")
+                            .append(
+                                $(document.createElement("ul"))
+                                    .attr({
+                                        'id':'select_activity_list',
+                                        'class':'nav nav-tabs nav-stacked'
+                                    })
+                            );
+                            $.each(json, function(i, value){
+                                $("#select_activity_list").append(
+                                    $(document.createElement("li"))
+                                        .append(
+                                            $(document.createElement("a"))
+                                                .attr({
+                                                    'href':'#',
+                                                    'class':'btn',
+                                                    'onClick':'addActivity('+value.id+')'
+                                                    })
+                                                .append(
+                                                    $(document.createElement("strong"))
+                                                        .text(value.name+" -> "+value.description)
+                                                )
+                                        )
+                                );
+                            });
+                        }
+                }
+            );
+            $("#select_dialog").show();
+		});
+    });
+    
+    function changeTime(cid)
+    {
+        $.ajax(
+            "/activity/changetime",
+            {
+                method:'get',
+                data:{
+                    cid:cid,
+                    start_hour:$("#"+cid+"_start_hour").val(),
+                    start_minute:$("#"+cid+"_start_minute").val()
+                    },
+                dataType: 'json',
+                success: function(json)
+                        {
+                            $("#"+cid+"_error").empty()
+                            $("#"+cid+"_error").hide()
+                            if(!json.valid)
+                            {
+                                $("#"+cid+"_error").append(
+                                    $(document.createElement("div"))
+                                        .attr({
+                                            'class':'alert'
+                                        })
+                                        .append(
+                                            $(document.createElement("button"))
+                                                .attr({
+                                                    'type':'button',
+                                                    'class':'close',
+                                                    'data-dismiss':'alert'
+                                                })
+                                                .text('x')
+                                        )
+                                        .append(
+                                            $(document.createElement("strong"))
+                                                .text(json.message)
+                                        )
+                                )
+                                $("#"+cid+"_error").show()
+                            }
+                            else
+                                location.reload()
+                        }
+            }            
+        )
+    }
+    
+    function startActivity(cid,id)
+    {
+        $.ajax(
+            "/activity/startmeasure",
+            {
+                method:'get',
+                data:{
+                        id:id,
+                        cid:cid
+                    },
+                dataType: 'json',
+                success: function(response1)
+                    {
+                        if(response1.isdone)
+                        {
+                            location.reload()
+                        }
+                    }
+            }
+        )
+    }
+    
+    function endActivity(cid,id)
+    {
+        $.ajax(
+            "/activity/endmeasure",
+            {
+                method:'get',
+                data:{
+                        id:id,
+                        cid:cid
+                    },
+                dataType: 'json',
+                success: function(response1)
+                    {
+                        if(response1.isdone)
+                        {
+                            location.reload()
+                        }
+                    }
+            }
+        )       
+    }
+    
+    function startbActivity(cid,id)
+    {
+        $.ajax(
+            "/activity/startbmeasure",
+            {
+                method:'get',
+                data:{
+                        id:id,
+                        cid:cid
+                    },
+                dataType: 'json',
+                success: function(response1)
+                    {
+                        if(response1.isdone)
+                        {
+                            location.reload()
+                        }
+                    }
+            }
+        )
+    }
+    
+    function endbActivity(cid,id)
+    {
+        $.ajax(
+            "/activity/endbmeasure",
+            {
+                method:'get',
+                data:{
+                        id:id,
+                        cid:cid
+                    },
+                dataType: 'json',
+                success: function(response1)
+                    {
+                        if(response1.isdone)
+                        {
+                            location.reload()
+                        }
+                    }
+            }
+        )       
+    }
+    
+    function removeActivity(cid)
+    {
+        $.ajax(
+            "/activity/removeactivity",
+            {
+                method:'get',
+                data: {id:cid},
+                dataType: 'json',
+                success: function()
+                    {
+                        location.reload()
+                    }
+            }
+        )
+    }
+    
+    function addActivity(id){
+            $.ajax(
+                "/activity/addactivity",
+                {
+                    method:'get',
+                    data: {id:id},
+                    dataType: 'json',
+                    success: function()
+                        {
+                            location.reload()
+                        }
+                }
+            )
+    }
+    
+    function configureAccordion(id)
+    {
+        $(id).find("#sub_accordion").each(function()
+        {
+            $(this)
+                .accordion({
+                    header: "> div > h3",
+                    collapsible: true
+                })
+        }
+        );            
+        $(id)
+            .accordion({
+                header: "> div > h3",
+                collapsible: true
+            })
+            .sortable({
+                axis: "y",
+                handle: "h3",
+                stop: function( event, ui ) {
+                    ui.item.children( "h3" ).triggerHandler( "focusout" );
+                }
+            });
+    }
+<?php $this->headScript()->captureEnd(); ?>

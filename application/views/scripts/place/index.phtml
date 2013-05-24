@@ -1,0 +1,24 @@
+<div id="view-content" class="span12">  
+    <h3>Busca el lugar:</h3>
+</div>
+<?php
+    $view = new Zend_View();
+    $view->addScriptPath(APPLICATION_PATH.'/views/');
+    echo $view->render('map.php');
+?>
+<div class="span6">
+<?php
+    echo $this->form;
+?>
+</div>
+<?php $this->headScript()->captureStart();?>
+function getLat(){
+    document.forms['newplaceform'].elements["lat"].value=document.forms['mapform'].elements["lat"].value;
+}
+function getLong(){
+    document.forms['newplaceform'].elements["long"].value=document.forms['mapform'].elements["long"].value;
+}
+function getMapAddress(){
+    document.forms['newplaceform'].elements["secondaddress"].value=document.forms['mapform'].elements["mapaddress"].value;
+}
+<?php $this->headScript()->captureEnd(); ?>

@@ -1,0 +1,544 @@
+<div id="view-content" class="span12"> 
+    <h3>Crear Actividad</h3>
+<?php
+    echo $this->form;
+?>
+    <div id="activities2" class="span5">
+        <table id="activities2grid" style="display: none"></table>
+    </div>
+    <div id="activities" class="span5">
+        <table id="activitiesgrid" style="display: none"></table>
+        <h5>Aqui puedes organizar las Actividades de Bloque, este orden se guarda como predefinido para el bloque. <i class="icon-circle-arrow-down"></i></h5>
+        <div id="activities_acc"></div>
+    </div>
+    <div id="places" class="span5">
+        <table id="placesgrid" style="display: none"></table>
+        <h5>Aqui puedes organizar los Lugares que visitas en esta ruta, de preferencia colocalos en orden <i class="icon-circle-arrow-down"></i></h5>
+        <div id="places_acc"></div>
+    </div>
+</div>
+<?php $this->headScript()->captureStart();?>
+    $(document).ready(function(){         
+        $("#activities").hide();
+        $("#block-activities-checkbox").hide();
+        $("#places").hide();
+        $("#block-places-checkbox").hide();
+        typeChange();
+    });
+    
+    function getSelectedRowsFromGrid(grid)
+    {
+        selectedActArr = new Array();
+        $.each($('.trSelected', grid), function(k, vl){            
+            selectedActArr[k] = new Object();
+            $.each($(vl).find('td'),function(i, value){
+                $.each($(value).find('div'),function(j, val){
+                    switch($(value).attr('abbr'))
+                    {
+                        case "id":
+                            selectedActArr[k].id=val.innerHTML;
+                            break;
+                        case "type":
+                            selectedActArr[k].type=val.innerHTML;
+                            break;
+                        case "register":
+                            selectedActArr[k].register=val.innerHTML;
+                            break;
+                        case "name":
+                            selectedActArr[k].name=val.innerHTML;
+                            break;
+                        case "description":
+                            if(val.innerHTML=="&nbsp;")
+                                selectedActArr[k].description='Sin descripcion';
+                            else
+                                selectedActArr[k].description=val.innerHTML;
+                            break;
+                    }
+                });
+            });
+        });
+        return selectedActArr;
+    }
+    
+    function getSelectedRowsFromPlacesGrid(grid)
+    {
+        selectedActArr = new Array();
+        $.each($('.trSelected', grid), function(k, vl){            
+            selectedActArr[k] = new Object();
+            $.each($(vl).find('td'),function(i, value){
+                $.each($(value).find('div'),function(j, val){
+                    switch($(value).attr('abbr'))
+                    {
+                        case "id":
+                            selectedActArr[k].id=val.innerHTML;
+                            break;
+                        case "fulladdress":
+                            selectedActArr[k].address=val.innerHTML;
+                            break;
+                        case "description":
+                            if(val.innerHTML=="&nbsp;")
+                                selectedActArr[k].description='Sin descripcion';
+                            else
+                                selectedActArr[k].description=val.innerHTML;
+                            break;
+                    }
+                });
+            });
+        });
+        return selectedActArr;
+    }
+    
+    function saveActivityList()
+    {
+        $("#block-activities-checkbox-options").empty();
+        acc_act = getAccordionOrder();
+        if(acc_act==0)
+        {
+            $("#block-activities-checkbox-options")
+                .append(
+                    $(document.createElement("label"))
+                        .attr({
+                            'for':'block-null'
+                        })
+                        .append(
+                            $(document.createElement("input"))
+                                .attr({
+                                    'type':'checkbox',
+                                    'name':'block[]',
+                                    'value':'null',
+                                    'readonly':true,
+                                    'checked':true
+                                })
+                        )
+                        .append('Ninguna')
+                        
+                )
+                .append($(document.createElement("br")));
+        }
+        else
+        {
+            $.each(acc_act,function(i,val){            
+                $("#block-activities-checkbox-options")
+                    .append(
+                        $(document.createElement("label"))
+                            .attr({
+                                'for':'block-'+val.name
+                            })
+                            .append(
+                                $(document.createElement("input"))
+                                    .attr({
+                                        'type':'checkbox',
+                                        'name':'block[]',
+                                        'value':val.id,
+                                        'readonly':true,
+                                        'checked':true
+                                    })
+                            )
+                            .append(val.name)
+                            
+                    )
+                    .append($(document.createElement("br")));
+            });
+        }
+        $("#block-activities-checkbox").show();
+    }
+    
+    function savePlacesList()
+    {
+        $("#block-places-checkbox-options").empty();
+        acc_act = getPlaceAccordionOrder();
+        if(acc_act==0)
+        {
+            $("#block-places-checkbox-options")
+                .append(
+                    $(document.createElement("label"))
+                        .attr({
+                            'for':'route-null'
+                        })
+                        .append(
+                            $(document.createElement("input"))
+                                .attr({
+                                    'type':'checkbox',
+                                    'name':'route[]',
+                                    'value':'null',
+                                    'readonly':true,
+                                    'checked':true
+                                })
+                        )
+                        .append('Mi casa')
+                        
+                )
+                .append($(document.createElement("br")));
+        }
+        else
+        {
+            $.each(acc_act,function(i,val){            
+                $("#block-places-checkbox-options")
+                    .append(
+                        $(document.createElement("label"))
+                            .attr({
+                                'for':'route-'+val.name
+                            })
+                            .append(
+                                $(document.createElement("input"))
+                                    .attr({
+                                        'type':'checkbox',
+                                        'name':'route[]',
+                                        'value':val.id,
+                                        'readonly':true,
+                                        'checked':true
+                                    })
+                            )
+                            .append(val.name)
+                            
+                    )
+                    .append($(document.createElement("br")));
+            });
+        }
+        $("#block-places-checkbox").show();
+    }
+    
+    function updateActivityList(com, grid) {
+        activities=getSelectedRowsFromGrid(grid);
+        $("#accordion").remove();
+        $("#activities_acc").append($(document.createElement("div")).attr({'id':'accordion'}));
+			if (com == 'Actualizar Lista') {
+                $.each(activities,function(i,value){
+                    $("#accordion").append(
+                        $(document.createElement("div"))
+                            .attr({
+                                'class':'group'
+                            })
+                            .append(
+                                $(document.createElement("h3"))
+                                    .text(value.name+" -> "+value.description)
+                                    .append(
+                                        $(document.createElement("input"))
+                                            .attr({
+                                                'id':'actinfo-id',
+                                                'type':'hidden',
+                                                'name':'id',
+                                                'value':value.id
+                                            })
+                                    )
+                                    .append(
+                                        $(document.createElement("input"))
+                                            .attr({
+                                                'id':'actinfo-name',
+                                                'type':'hidden',
+                                                'name':'name',
+                                                'value':value.name
+                                            })
+                                    ) 
+                            )
+                            .append(
+                                $(document.createElement("div"))
+                                    .append(
+                                        $(document.createElement("h5"))
+                                            .text("Tipo: "+value.type)                                                
+                                    )
+                                    .append(
+                                        $(document.createElement("h5"))
+                                            .text("Registro: "+value.register)                                                
+                                    )
+                            )
+                    );
+                });
+            }
+            configureAccordion();
+            saveActivityList();
+		}
+    
+    function updatePlacesList(com, grid) {
+        places=getSelectedRowsFromPlacesGrid(grid);
+        console.log(places);
+        $("#plcaccordion").remove();
+        $("#places_acc").append($(document.createElement("div")).attr({'id':'plcaccordion'}));
+            if (com == 'Actualizar Lista') {
+                $.each(places,function(i,value){
+                    $("#plcaccordion").append(
+                        $(document.createElement("div"))
+                            .attr({
+                                'class':'group'
+                            })
+                            .append(
+                                $(document.createElement("h3"))
+                                    .text(value.description+" -> "+value.address)
+                                    .append(
+                                        $(document.createElement("input"))
+                                            .attr({
+                                                'id':'actinfo-id',
+                                                'type':'hidden',
+                                                'name':'id',
+                                                'value':value.id
+                                            })
+                                    )
+                                    .append(
+                                        $(document.createElement("input"))
+                                            .attr({
+                                                'id':'actinfo-name',
+                                                'type':'hidden',
+                                                'name':'name',
+                                                'value':value.description
+                                            })
+                                    )
+                            )
+                            .append(
+                                $(document.createElement("div"))
+                                    .append(
+                                        $(document.createElement("h5"))
+                                            .text("Direccion: "+value.address)                                                
+                                    )
+                            )
+                    );
+                });
+            }
+            configurePlaceAccordion();
+            savePlacesList();
+        }
+    
+    function typeChange(){
+       if($("#activitytype1-block").is(':checked')){
+            configureActivitiesGrid();
+            $("#activities").show();
+            $("#block-activities-checkbox").show();
+       }
+       else
+       {
+            $("#activities").hide();
+            $("#block-activities-checkbox").hide();
+       }
+       if($("#activitytype1-route").is(':checked')){
+            configurePlacesGrid();
+            $("#places").show();
+            $("#block-places-checkbox").show();
+       }
+       else
+       {
+            $("#places").hide();
+            $("#block-places-checkbox").hide();
+       }
+       if($("#activitytype1-individual").is(':checked')){
+            configureActivities2Grid();
+            $("#activities2").show();
+       }
+       else
+       {
+            $("#activities2").hide();
+       }       
+    }
+    
+    function configureAccordion(){
+        $( "#accordion" )
+            .accordion({
+                header: "> div > h3",
+                collapsible: true,
+                active: false
+            })
+            .sortable({
+                axis: "y",
+                handle: "h3",
+                stop: function( event, ui ) {
+                    ui.item.children( "h3" ).triggerHandler( "focusout" );
+                    saveActivityList();
+                }
+            });
+    }
+    
+    function configurePlaceAccordion(){
+        $( "#plcaccordion" )
+            .accordion({
+                header: "> div > h3",
+                collapsible: true,
+                active: false
+            })
+            .sortable({
+                axis: "y",
+                handle: "h3",
+                stop: function( event, ui ) {
+                    ui.item.children( "h3" ).triggerHandler( "focusout" );
+                    savePlacesList();
+                }
+            });
+    }
+    
+    function getAccordionOrder()
+    {
+        acts = new Array();
+        $.each($("#accordion").find("h3"),function(i,val)
+        {
+            acts[i]=new Object();
+            $.each($(val).find("input"),function(j,v){
+                if(v.name=="id")
+                    acts[i].id=v.value;
+                else
+                    acts[i].name=v.value;
+            });            
+        });
+        return acts;
+    }
+    
+    function getPlaceAccordionOrder()
+    {
+        acts = new Array();
+        $.each($("#plcaccordion").find("h3"),function(i,val)
+        {
+            acts[i]=new Object();
+            $.each($(val).find("input"),function(j,v){
+                if(v.name=="id")
+                    acts[i].id=v.value;
+                else
+                    acts[i].name=v.value;
+            });            
+        });
+        return acts;
+    }
+    
+    function configureActivitiesGrid(){
+        $("#activitiesgrid").flexigrid({
+			url : '/activity/getgridactivitiesbyuser',
+			dataType : 'json',
+			colModel : [{
+				display : '#',
+				name : 'num',
+				width : 10,
+				sortable : true,
+				align : 'center'
+			},{
+				display : 'Tipo',
+				name : 'type',
+				width : 100,
+				sortable : true,
+				align : 'center'
+			}, {
+				display : 'Registro',
+				name : 'register',
+				width : 100,
+				sortable : true,
+				align : 'center'
+			}, {
+				display : 'Nombre',
+				name : 'name',
+				width : 100,
+				sortable : true,
+				align : 'center'
+			},{
+				display : 'Descripcion',
+				name : 'description',
+				width : 310,
+				sortable : true,
+				align : 'center'
+			},{
+				display : 'id',
+				name : 'id',
+				width : 1,
+				sortable : true,
+				align : 'center',
+                hide : true
+			}],
+			buttons : [{
+				name : 'Actualizar Lista',
+				bclass : 'btn btn-primary',
+				onpress : updateActivityList
+			}],
+			sortname : "num",
+			sortorder : "asc",
+			title : 'Actividades',
+            width : 700,
+            height: 200
+		});
+    }
+    
+    function configureActivities2Grid(){
+        $("#activities2grid").flexigrid({
+			url : '/activity/getgridactivities2byuser',
+			dataType : 'json',
+			colModel : [{
+				display : '#',
+				name : 'num',
+				width : 10,
+				sortable : true,
+				align : 'center'
+			},{
+				display : 'Tipo',
+				name : 'type',
+				width : 100,
+				sortable : true,
+				align : 'center'
+			}, {
+				display : 'Registro',
+				name : 'register',
+				width : 100,
+				sortable : true,
+				align : 'center'
+			}, {
+				display : 'Nombre',
+				name : 'name',
+				width : 100,
+				sortable : true,
+				align : 'center'
+			},{
+				display : 'Descripcion',
+				name : 'description',
+				width : 310,
+				sortable : true,
+				align : 'center'
+			},{
+				display : 'id',
+				name : 'id',
+				width : 1,
+				sortable : true,
+				align : 'center',
+                hide : true
+			}],
+			sortname : "num",
+			sortorder : "asc",
+			title : 'Actividades',
+            width : 700,
+            height: 200
+		});
+    }
+    
+    function configurePlacesGrid(){
+        $("#placesgrid").flexigrid({
+			url : '/place/getgridplacesbyuser',
+			dataType : 'json',
+			colModel : [{
+				display : '#',
+				name : 'num',
+				width : 10,
+				sortable : true,
+				align : 'center'
+			},{
+				display : 'Descripcion',
+				name : 'description',
+				width : 320,
+				sortable : true,
+				align : 'center'
+			},{
+				display : 'Direccion',
+				name : 'fulladdress',
+				width : 320,
+				sortable : true,
+				align : 'center'
+			},{
+				display : 'id',
+				name : 'id',
+				width : 1,
+				sortable : true,
+				align : 'center',
+                hide : true
+			}],
+			buttons : [{
+				name : 'Actualizar Lista',
+				bclass : 'btn btn-primary',
+				onpress : updatePlacesList
+			}],
+			sortname : "num",
+			sortorder : "asc",
+			title : 'Actividades',
+            width : 700,
+            height: 200
+		});
+    }
+<?php $this->headScript()->captureEnd(); ?>

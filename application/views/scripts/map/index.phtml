@@ -1,0 +1,18 @@
+<div id="view-content">
+</div>
+<?php 
+    $view = new Zend_View();
+    $view->addScriptPath(APPLICATION_PATH.'/views/');
+    echo $view->render('map.php');
+    $this->headScript()->captureStart();
+?>
+function getLat(){
+    console.log(document.forms['mapform'].elements["lat"].value);
+}
+function getLong(){
+    console.log(document.forms['mapform'].elements["long"].value);
+}
+function getMapAddress(){
+    console.log(document.forms['mapform'].elements["mapaddress"].value);
+}
+<?php $this->headScript()->captureEnd(); ?>
