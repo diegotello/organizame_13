@@ -27,7 +27,7 @@ function connectToDb()
 {
     if(APPLICATION_ENV == "development")
     {
-        $con = mysql_connect("localhost","root","");
+        $con = mysql_connect("localhost","root","ipbroad305.ldt");
         if (!$con)
         {
             die('Could not connect: ' . mysql_error());
