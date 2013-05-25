@@ -9,6 +9,7 @@
 					<th>Parametros</th>
 					<th>Respuesta</th>
 					<th>Comentarios</th>
+					<th>Prueba</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -17,8 +18,35 @@
 					<td>{username:"abc", password:"xyz"}</td>
 					<td>{success:(true | false), user_id:x}</td>
 					<td>"success"=false => "user_id"=-1</td>
+					<td>
+						<form class="form-inline">
+							<input type="text" class="input-small" id="login_username" placeholder="Username">
+							<input type="password" class="input-small" id="login_password" placeholder="Password">
+							<button type="button" class="btn" onClick="testLogin();">Probar</button>
+						</form>
+						<div id="login_result">
+						</div>
+					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
+<?php $this->headScript()->captureStart();?>
+
+function testLogin()
+{
+	$('#login_result')
+		.empty()
+		.append('sending username='+$('#login_username').val()+' password='+$('#login_password').val()+'<br>');
+	$.ajax({
+            type: "POST",
+            url: "/webservice/login",
+            data: {username:$('#login_username').val(),password:$('#login_password').val()},
+            success: function(response) {
+               	$('#login_result')					
+					.append(JSON.stringify(response));
+            }
+        });
+}
+<?php $this->headScript()->captureEnd(); ?>
