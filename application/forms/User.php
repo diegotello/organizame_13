@@ -126,19 +126,6 @@ class Dtad_Form_User extends Zend_Form
                         array(array('row' => 'HtmlTag'), array('tag' => 'div', 'class' => 'form-actions')),
                         )
                     ));
-       
-        $captcha = new Zend_Form_Element_Captcha(
-                            'foo', 
-                            array(
-                                'label' => 'Ingrese el siguiente texto:',
-                                'captcha' => 'Figlet',
-                                'captchaOptions' => array(
-                                                    'captcha' => 'Figlet',
-                                                    'wordLen' => 6,
-                                                    'timeout' => 300,
-                                                    )
-                            )
-                        );
 
         $this->addElements(array(
                     $username,
@@ -150,7 +137,6 @@ class Dtad_Form_User extends Zend_Form
                     $homeaddress,
                     $email,
                     $password,
-                    $captcha,
                     $submit
                  ));
     }
