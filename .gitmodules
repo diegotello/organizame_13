@@ -1,0 +1,6 @@
+[submodule "library/vendor/Doctrine"]
+	path = library/vendor/Doctrine
+	url = https://github.com/doctrine/doctrine2.git
+[submodule "library/vendor/doctrine-migrations"]
+	path = library/vendor/doctrine-migrations
+	url = git://github.com/doctrine/migrations.git
