@@ -28,10 +28,10 @@ class WebserviceController extends Zend_Controller_Action
             if ($result->isValid()) {
                 $user = $result->getIdentity();
                 $auth->getStorage()->write($user);
-                $response= array('logged'=>'true');
+                $response= array('success'=>'true','user_id'=>$result->getIdentity()->userId);
             }
             	else{
-            		$response= array('logged'=>'false');
+            		$response= array('success'=>'false','user_id'=>'-1');
             	}
             $this->_helper->json($response);
     	}

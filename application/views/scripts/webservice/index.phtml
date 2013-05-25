@@ -1,4 +1,24 @@
-<br /><br />
 <div id="view-content">
-	<p>View script for controller <b>Webservice</b> and script/action name <b>index</b></p>
+	<h2>Organizame API</h2>
+	<p>Todos los servicios reciben los parametros por medio de POST.</p>
+	<div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Url</th>
+					<th>Parametros</th>
+					<th>Respuesta</th>
+					<th>Comentarios</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>http://organizame.apparkitekt.net/webservice/login</td>
+					<td>{username:"abc", password:"xyz"}</td>
+					<td>{success:(true | false), user_id:x}</td>
+					<td>devuelve -1 en "user_id" cuando "success"=false</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
