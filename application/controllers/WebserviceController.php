@@ -34,6 +34,10 @@ class WebserviceController extends Zend_Controller_Action
                                 "username"=>$user->getusername());
                 $this->_helper->json($response);
             }
+            else
+            {
+                $this->_helper->json(array("success"=>false));
+            }
         }
         catch(Exception $e)
         {
