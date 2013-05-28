@@ -45,6 +45,38 @@ class WebserviceController extends Zend_Controller_Action
         }
     }
 
+    public function catalogAction()
+    {
+        $this->_helper->layout()->disableLayout();        
+        $this->_helper->viewRenderer->setNoRender();
+        try
+        {
+            if(isset($_POST['id'])){
+                $id=$_POST['id'];
+                $em = Zend_Registry::get("doctrine")->getEntityManager();
+                $activities = $em->getRepository('\Dtad\Entity\Activity')->findByUser($id);
+                $activities_array = array();
+                foreach($activities as $a)
+                    array_push($activities_array,
+                            array(
+                                "id"=>$a->getId(),
+                                "name"=>$a->getName(),
+                                "description"=>$a->getDescription()
+                            )
+                    );
+                $this->_helper->json(array("success"=>true,"activities"=>$activities_array));
+            }
+            else
+            {
+                $this->_helper->json(array("success"=>false));
+            }
+        }
+        catch(Exception $e)
+        {
+            $this->_helper->json(array("success"=>false));
+        }
+    }    
+
     public function loginAction()
 	{
         $this->_helper->layout()->disableLayout();        
