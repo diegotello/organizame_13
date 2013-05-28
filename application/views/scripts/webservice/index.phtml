@@ -1,4 +1,7 @@
 <div id="view-content">
+	<div class="alert alert-info" id="result">
+		Aqui puedes ver el resultado de las pruebas
+	</div>
 	<h2>Organizame API</h2>
 	<p>Todos los servicios reciben los parametros por medio de POST.</p>
 	<div>
@@ -23,9 +26,19 @@
 							<input type="text" class="input-small" id="login_username" placeholder="Username">
 							<input type="password" class="input-small" id="login_password" placeholder="Password">
 							<button type="button" class="btn" onClick="testLogin();">Probar</button>
+						</form>						
+					</td>
+				</tr>
+				<tr>
+					<td>http://organizame.apparkitekt.net/webservice/user</td>
+					<td>{id:"x"}</td>
+					<td>{success:(true | false), firstname:"xx", middlename:"yy", lastname:"zz", username:"aa"}</td>
+					<td>"success"=false => all other values are null</td>
+					<td>
+						<form class="form-inline">
+							<input type="text" class="input-small" id="user_id" placeholder="Id">
+							<button type="button" class="btn" onClick="testUser();">Probar</button>
 						</form>
-						<div id="login_result">
-						</div>
 					</td>
 				</tr>
 			</tbody>
@@ -36,7 +49,7 @@
 
 function testLogin()
 {
-	$('#login_result')
+	$('#result')
 		.empty()
 		.append('sending username='+$('#login_username').val()+' password='+$('#login_password').val()+'<br>');
 	$.ajax({
@@ -44,7 +57,23 @@ function testLogin()
             url: "/webservice/login",
             data: {username:$('#login_username').val(),password:$('#login_password').val()},
             success: function(response) {
-               	$('#login_result')					
+               	$('#result')					
+					.append(JSON.stringify(response));
+            }
+        });
+}
+
+function testUser()
+{
+	$('#result')
+		.empty()
+		.append('sending id='+$('#user_id').val()+'<br>');
+	$.ajax({
+            type: "POST",
+            url: "/webservice/user",
+            data: {id:$('#user_id').val()},
+            success: function(response) {
+               	$('#result')					
 					.append(JSON.stringify(response));
             }
         });

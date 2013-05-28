@@ -13,6 +13,34 @@ class WebserviceController extends Zend_Controller_Action
         // action body
     }
 
+    public function userAction()
+    {
+        $this->_helper->layout()->disableLayout();        
+        $this->_helper->viewRenderer->setNoRender();
+        try
+        {
+            if(isset($_POST['id'])){
+                $id=$_POST['id'];
+                $em = Zend_Registry::get("doctrine")->getEntityManager();
+                $user = $em->getRepository('\Dtad\Entity\User')->findOneById($id);
+                $profile = $em->getRepository('\Dtad\Entity\Profile')->findOneByUser($id);
+                if($user == null or $profile == null)
+                    $this->_helper->json(array("success"=>false));
+                $response = array(
+                                "success"=>true,
+                                "firstname"=>$profile->getFirstName(),
+                                "middlename"=>$profile->getMiddleName(),
+                                "lastname"=>$profile->getLastName(),
+                                "username"=>$user->getusername());
+                $this->_helper->json($response);
+            }
+        }
+        catch(Exception $e)
+        {
+            $this->_helper->json(array("success"=>false));
+        }
+    }
+
     public function loginAction()
 	{
         $this->_helper->layout()->disableLayout();        
@@ -35,6 +63,22 @@ class WebserviceController extends Zend_Controller_Action
             	}
             $this->_helper->json($response);
     	}
+    }
+
+    public function getactivitiesAction()
+    {
+        $this->_helper->layout()->disableLayout();        
+        $this->_helper->viewRenderer->setNoRender();
+        $em = Zend_Registry::get("doctrine")->getEntityManager();
+        if(isset($_POST['user_id']))
+        {
+            $user=$em->getRepository('\Dtad\Entity\Activity')->findOneBy($_POST['user_id']);
+        }
+        else
+        {
+            $this->_helper->json(array('success'=>'false','activities'=>array()));
+        }
+
     }
 
     public function gettodayactivitiesAction(){
