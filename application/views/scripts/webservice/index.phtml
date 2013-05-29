@@ -46,12 +46,28 @@
 					<td>{id:"x"}</td>
 					<td>{success:(true | false), activities:ACTIVITIES_ARRAY}</td>
 					<td>"success"=true AND ACTIVITIES_ARRAY = null => el usuario no ha creado tareas<br>Cada elemento de ACTIVITIES_ARRAY tiene este formato
-						{id:ACTIVITY_ID,name:"xxx",description:"yyy"}
+						{id:ACTIVITY_ID,name:"xxx",description:"yyy",estimate:Y}<br>
+						estimate=-1 => el usuario no ingreso un estimado
 					</td>
 					<td>
 						<form class="form-inline">
 							<input type="text" class="input-small" id="catalog_id" placeholder="userId">
 							<button type="button" class="btn" onClick="testCatalog();">Probar</button>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>http://organizame.apparkitekt.net/webservice/createtask</td>
+					<td>{id:"x"}</td>
+					<td>{success:(true | false)}</td>
+					<td></td>
+					<td>
+						<form class="form-inline">
+							<input type="text" class="input-small" id="create_id" placeholder="userId">
+							<input type="text" class="input-small" id="create_name" placeholder="name">
+							<input type="text" class="input-small" id="create_description" placeholder="description">
+							<input type="text" class="input-small" id="create_estimate" placeholder="estimate">
+							<button type="button" class="btn" onClick="testCreateTask();">Probar</button>
 						</form>
 					</td>
 				</tr>
@@ -102,6 +118,27 @@ function testCatalog()
             type: "POST",
             url: "/webservice/catalog",
             data: {id:$('#catalog_id').val()},
+            success: function(response) {
+               	$('#result')					
+					.append(JSON.stringify(response));
+            }
+        });
+}
+
+function testCreateTask()
+{
+	$('#result')
+		.empty()
+		.append('sending user_id='+$('#create_id').val()+' name='+$('#create_name').val()+' description='+$('#create_description').val()+' estimate='+$('#create_estimate').val()+'<br>');
+	$.ajax({
+            type: "POST",
+            url: "/webservice/createtask",
+            data: {
+            	user_id:$('#create_id').val(),
+            	name:$('#create_name').val(),
+            	description:$('#create_description').val(),
+            	estimate:$('#create_estimate').val()
+            },
             success: function(response) {
                	$('#result')					
 					.append(JSON.stringify(response));
