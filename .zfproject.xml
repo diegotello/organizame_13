@@ -41,6 +41,7 @@
         <formFile formName="User"/>
         <formFile formName="Activity"/>
         <formFile formName="Addactivity"/>
+        <formFile formName="ActivityFromService"/>
       </formsDirectory>
       <layoutsDirectory>
         <layoutScriptsDirectory>
