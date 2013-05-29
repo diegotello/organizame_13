@@ -63,6 +63,13 @@ class Activity
     private $isdependent;
 
     /**
+     * @var int $estimation
+     *
+     * @Column(name="estimation", type="integer", precision=0, scale=0, nullable=true, unique=false)
+     */
+    private $estimation;
+
+    /**
      * Get id
      *
      * @return bigint 
@@ -161,5 +168,23 @@ class Activity
      */
     public function setIsDependent($isdependent){
         $this->isdependent= $isdependent;
+    }
+
+    /**
+     * Get estimation
+     *
+     * @return integer 
+     */
+    public function getEstimation(){
+        return $this->estimation;
+    }
+
+    /**
+     * Set estimation
+     *
+     * @param integer $estimation
+     */
+    public function setEstimation($estimation){
+        $this->estimation= $estimation;
     }
 }
