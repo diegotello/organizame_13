@@ -57,7 +57,7 @@ class Profile
      *
      * @ManyToOne(targetEntity="Dtad\Entity\Place")
      * @JoinColumns({
-     *   @JoinColumn(name="place_id", referencedColumnName="id", nullable=false)
+     *   @JoinColumn(name="place_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $home;
