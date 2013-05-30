@@ -174,7 +174,7 @@ function measureStatus($cid,$id,$start){
 function getCount($id)
 {
     $query=execQuery("
-            SELECT AVG((end-start)/60) as est
+            SELECT end
             FROM measure
             WHERE activity_id=".$id."
     ");
