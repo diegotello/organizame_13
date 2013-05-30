@@ -49,14 +49,22 @@ class WebserviceController extends Zend_Controller_Action
                 $activities = $em->getRepository('\Dtad\Entity\Activity')->findByUser($id);
                 $activities_array = array();
                 foreach($activities as $a)
+                {
+                    $aid=$a->getId();
+                    $media=getEstimated($aid);
+                    $varianza=getVariance($aid);
+                    $count=getCount($aid);
                     array_push($activities_array,
                             array(
-                                "id"=>$a->getId(),
+                                "id"=>$aid,
                                 "name"=>$a->getName(),
                                 "description"=>$a->getDescription(),
-                                "estimate"=>($a->getEstimate()!=null?$a->getEstimate():-1)
+                                "estimate"=>$media,
+                                "variance"=>$varianza,
+                                "count"=>$count
                             )
                     );
+                }
                 $this->_helper->json(array("success"=>true,"activities"=>$activities_array));
             }
             else
