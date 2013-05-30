@@ -288,14 +288,11 @@ class WebserviceController extends Zend_Controller_Action
         $this->_helper->viewRenderer->setNoRender();
         if ($this->getRequest()->isPost()) {
             $id = $this->_getParam('id');
-            $uid = $this->_getParam('user_id');
-            if ($auth->hasIdentity())
-            {
-                $day = date("d-m-y");
-                $start = date("H:i:s");
-                execQuery("INSERT INTO cronogram(user_id,activity_id,day,start,status) VALUES (".$uid.",".$id.",'".$day."','".$start."','todo')");
-                $this->_helper->json(array("success"=>true));
-            }
+            $uid = $this->_getParam('user_id');            
+            $day = date("d-m-y");
+            $start = date("H:i:s");
+            execQuery("INSERT INTO cronogram(user_id,activity_id,day,start,status) VALUES (".$uid.",".$id.",'".$day."','".$start."','todo')");
+            $this->_helper->json(array("success"=>true));
         }
     }
 
