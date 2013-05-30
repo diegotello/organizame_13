@@ -46,7 +46,7 @@
 					<td>{id:"x"}</td>
 					<td>{success:(true | false), activities:ACTIVITIES_ARRAY}</td>
 					<td>"success"=true AND ACTIVITIES_ARRAY = null => el usuario no ha creado tareas<br>Cada elemento de ACTIVITIES_ARRAY tiene este formato
-						{id:ACTIVITY_ID,name:"xxx",description:"yyy",estimate:Y}<br>
+						{id:ACTIVITY_ID, name:"xxx", description:"yyy", estimate:Y}<br>
 						estimate=-1 => el usuario no ingreso un estimado
 					</td>
 					<td>
@@ -58,7 +58,7 @@
 				</tr>
 				<tr>
 					<td>http://organizame.apparkitekt.net/webservice/createtask</td>
-					<td>{user_id:X,name:"activity_name",description:"activity_description",estimate:Y}</td>
+					<td>{user_id:X, name:"activity_name", description:"activity_description", estimate:Y}</td>
 					<td>{success:(true | false)}</td>
 					<td></td>
 					<td>
@@ -68,6 +68,23 @@
 							<input type="text" class="input-small" id="create_description" placeholder="description">
 							<input type="text" class="input-small" id="create_estimate" placeholder="estimate">
 							<button type="button" class="btn" onClick="testCreateTask();">Probar</button>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>http://organizame.apparkitekt.net/webservice/createuser</td>
+					<td>{username:"xxx", firstname:"yyy", middlename:"zzz", lastname:"aaa", email:"user@domain", password:"bbb"}</td>
+					<td>{success:(true | false), user_id:x}</td>
+					<td></td>
+					<td>
+						<form class="form-inline">
+							<input type="text" class="input-small" id="create_user_username" placeholder="name">
+							<input type="text" class="input-small" id="create_user_firstname" placeholder="first name">
+							<input type="text" class="input-small" id="create_user_middlename" placeholder="middle name">
+							<input type="text" class="input-small" id="create_user_lastname" placeholder="last name">
+							<input type="text" class="input-small" id="create_user_email" placeholder="user@domain">
+							<input type="text" class="input-small" id="create_user_password" placeholder="password">
+							<button type="button" class="btn" onClick="testCreateUser();">Probar</button>
 						</form>
 					</td>
 				</tr>
@@ -138,6 +155,30 @@ function testCreateTask()
             	name:$('#create_name').val(),
             	description:$('#create_description').val(),
             	estimate:$('#create_estimate').val()
+            },
+            success: function(response) {
+               	$('#result')					
+					.append(JSON.stringify(response));
+            }
+        });
+}
+
+function testCreateUser()
+{
+	$('#result')
+		.empty()
+		.append('sending username='+$('#create_user_username').val()+' firstname='+$('#create_user_firstname').val()+' middlename='+$('#create_user_middlename').val()+' lastname='+$('#create_user_lastname').val()+' email='+$('#create_user_email').val()+' password='+$('#create_user_password').val()+'<br>');
+	$.ajax({
+            type: "POST",
+            url: "/webservice/createuser",
+            data: {
+            	username:$('#create_user_username').val(),
+            	firstname:$('#create_user_firstname').val(),
+            	middlename:$('#create_user_middlename').val(),
+            	lastname:$('#create_user_lastname').val(),
+            	email:$('#create_user_email').val(),
+            	password:$('#create_user_password').val()
+
             },
             success: function(response) {
                	$('#result')					

@@ -111,33 +111,87 @@ class WebserviceController extends Zend_Controller_Action
             // action body
             $form=new Dtad_Form_ActivityFromService();
             if($this->getRequest()->isPost())    
+            {
+                $data = $this->getRequest()->getParams();
+                if($form->isValid($data))
                 {
-                    $data = $this->getRequest()->getParams();
-                    if($form->isValid($data))
-                    {
-                        $user_id = $data['user_id'];
-                        $name=$data['name'];
-                        $description=$data['description'];
-                        $estimate=$data['estimate'];
-                        $activitytype='individual-time';
-                        $em = Zend_Registry::get("doctrine")->getEntityManager();
-                        //new activity
-                        $activity= new \Dtad\Entity\Activity;
-                        $activity->setName($name);
-                        $activity->setDescription($description);
-                        $activity->setActivityType($em->getRepository('\Dtad\Entity\ActivityType')->findOneByName($activitytype));
-                        $activity->setEstimate($estimate);
-                        $activity->setIsDependent(0);
-                        $activity->setUser($em->getRepository('\Dtad\Entity\User')->findOneById($user_id));
-                        $em->persist($activity);
-                        $em->flush();
-                        $this->_helper->json(array("success"=>true));                   
-                    }
-                    else
-                    {
-                        $this->_helper->json(array("success"=>false));
-                    }
-                }            
+                    $user_id = $data['user_id'];
+                    $name=$data['name'];
+                    $description=$data['description'];
+                    $estimate=$data['estimate'];
+                    $activitytype='individual-time';
+                    $em = Zend_Registry::get("doctrine")->getEntityManager();
+                    //new activity
+                    $activity= new \Dtad\Entity\Activity;
+                    $activity->setName($name);
+                    $activity->setDescription($description);
+                    $activity->setActivityType($em->getRepository('\Dtad\Entity\ActivityType')->findOneByName($activitytype));
+                    $activity->setEstimate($estimate);
+                    $activity->setIsDependent(0);
+                    $activity->setUser($em->getRepository('\Dtad\Entity\User')->findOneById($user_id));
+                    $em->persist($activity);
+                    $em->flush();
+                    $this->_helper->json(array("success"=>true));                   
+                }
+                else
+                {
+                    $this->_helper->json(array("success"=>false));
+                }
+            }
+            else
+                $this->_helper->json(array("success"=>false));            
+        }
+        catch(Exception $e)
+        {
+            $this->_helper->json(array("success"=>false));
+        }
+    }
+
+    public function createuserAction()
+    {
+        $this->_helper->layout()->disableLayout();        
+        $this->_helper->viewRenderer->setNoRender();
+        try
+        {
+            // action body
+            $form = new Dtad_Form_UserFromService();
+            $now = new dateTime();
+            $this->view->form = $form;
+            if($this->getRequest()->isPost())    
+            {
+                $data = $this->getRequest()->getParams();
+                if($form->isValid($data))
+                {    
+                    $em = Zend_Registry::get("doctrine")->getEntityManager();
+                    
+                    $role=$em->getRepository('\Dtad\Entity\Role')->findOneBy(array('id'=>2));
+                    //new user
+                    $user = new \Dtad\Entity\User;
+                    $user->setUserName($data['username']);
+                    $user->setEmail($data['email']);
+                    $salt = sha1(mt_rand());
+                    $user->setSalt($salt);
+                    $password = sha1($salt.$data['password']);
+                    $user->setPassword($password);
+                    $user->setCreatedAt($now);
+                    $user->setRole($role);
+                    $em->persist($user);
+                    
+                    //new user profile
+                    $profile = new \Dtad\Entity\Profile;
+                    $profile->setUser($user);
+                    $profile->setMiddleName($data['middlename']);
+                    $profile->setFirstName($data['firstname']);
+                    $profile->setLastName($data['lastname']);
+                    $em->persist($profile);
+                    $em->flush();
+                    $this->_helper->json(array("success"=>true,'user_id'=>$user->getId()));
+                }
+                else
+                    $this->_helper->json(array("success"=>false));
+            }
+            else
+                $this->_helper->json(array("success"=>false));      
         }
         catch(Exception $e)
         {
