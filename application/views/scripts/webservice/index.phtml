@@ -72,6 +72,20 @@
 					</td>
 				</tr>
 				<tr>
+					<td>http://organizame.apparkitekt.net/webservice/updatetask</td>
+					<td>{user_id:X, name:"activity_name", description:"activity_description"}</td>
+					<td>{success:(true | false)}</td>
+					<td></td>
+					<td>
+						<form class="form-inline">
+							<input type="text" class="input-small" id="update_id" placeholder="activityId">
+							<input type="text" class="input-small" id="update_name" placeholder="name">
+							<input type="text" class="input-small" id="update_description" placeholder="description">
+							<button type="button" class="btn" onClick="testUpdateTask();">Probar</button>
+						</form>
+					</td>
+				</tr>
+				<tr>
 					<td>http://organizame.apparkitekt.net/webservice/createuser</td>
 					<td>{username:"xxx", firstname:"yyy", middlename:"zzz", lastname:"aaa", email:"user@domain", password:"bbb"}</td>
 					<td>{success:(true | false), user_id:x}</td>
@@ -155,6 +169,26 @@ function testCreateTask()
             	name:$('#create_name').val(),
             	description:$('#create_description').val(),
             	estimate:$('#create_estimate').val()
+            },
+            success: function(response) {
+               	$('#result')					
+					.append(JSON.stringify(response));
+            }
+        });
+}
+
+function testUpdateTask()
+{
+	$('#result')
+		.empty()
+		.append('sending user_id='+$('#update_id').val()+' name='+$('#update_name').val()+' description='+$('#update_description').val()+'<br>');
+	$.ajax({
+            type: "POST",
+            url: "/webservice/updatetask",
+            data: {
+            	id:$('#update_id').val(),
+            	name:$('#update_name').val(),
+            	description:$('#update_description').val()
             },
             success: function(response) {
                	$('#result')					

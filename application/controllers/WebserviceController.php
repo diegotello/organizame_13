@@ -155,6 +155,42 @@ class WebserviceController extends Zend_Controller_Action
         }
     }
 
+    public function updatetaskAction()
+    {
+        $this->_helper->layout()->disableLayout();        
+        $this->_helper->viewRenderer->setNoRender();
+        try
+        {
+            if($this->getRequest()->isPost())    
+            {
+                $data = $this->getRequest()->getParams();
+                if(isset($data['id'])&&isset($data['name']))
+                {
+                    $id = $data['id'];
+                    $name=$data['name'];
+                    $description=$data['description'];
+                    $em = Zend_Registry::get("doctrine")->getEntityManager();
+                    $activity = $em->getRepository('\Dtad\Entity\Activity')->findOneById($id);
+                    $activity->setName($name);
+                    $activity->setDescription($description);
+                    $em->persist($activity);
+                    $em->flush();
+                    $this->_helper->json(array("success"=>true));                   
+                }
+                else
+                {
+                    $this->_helper->json(array("success"=>false));
+                }
+            }
+            else
+                $this->_helper->json(array("success"=>false));            
+        }
+        catch(Exception $e)
+        {
+            $this->_helper->json(array("success"=>false));
+        }
+    }
+
     public function createuserAction()
     {
         $this->_helper->layout()->disableLayout();        
