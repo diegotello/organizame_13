@@ -1,6 +1,6 @@
 <?php
 
-class Application_Form_UserFromService extends Zend_Form
+class Dtad_Form_UserFromService extends Zend_Form
 {
 
     public function init()
