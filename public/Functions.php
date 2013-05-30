@@ -193,7 +193,7 @@ function getEstimated($id)
         if($query[0]['est']===null)
             return 0;
         else
-            return $query[0]['est'];
+            return round($query[0]['est'],1);
     }
     else
         return 0;
@@ -211,7 +211,7 @@ function getVariance($id)
         if($query[0]['var']===null)
             return 0;
         else
-            return $query[0]['var'];
+            return round($query[0]['var'],1);
     }
     else
         return 0;
