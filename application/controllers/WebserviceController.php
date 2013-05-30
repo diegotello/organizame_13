@@ -261,8 +261,8 @@ class WebserviceController extends Zend_Controller_Action
                             FROM measure
                             WHERE activity_id=".$id."
                         ");
-                    $result_data = array();
-                    $i=0;
+                    $result_data = array(array('x'=>0,'y'=>0));
+                    $i=1;
                     foreach($measures as $me)
                     {
                         array_push($result_data,array('x'=>$i,'y'=>round($me['obs'],1)));
