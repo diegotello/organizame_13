@@ -102,6 +102,18 @@
 						</form>
 					</td>
 				</tr>
+				<tr>
+					<td>http://organizame.apparkitekt.net/webservice/getactivityobservations</td>
+					<td>{id:"x"}</td>
+					<td>{success:(true | false), data:array(x,y)}</td>
+					<td></td>
+					<td>
+						<form class="form-inline">
+							<input type="text" class="input-small" id="observations_activity_id" placeholder="activity_id">
+							<button type="button" class="btn" onClick="testGetObservations();">Probar</button>
+						</form>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
@@ -189,6 +201,24 @@ function testUpdateTask()
             	id:$('#update_id').val(),
             	name:$('#update_name').val(),
             	description:$('#update_description').val()
+            },
+            success: function(response) {
+               	$('#result')					
+					.append(JSON.stringify(response));
+            }
+        });
+}
+
+function testGetObservations()
+{
+	$('#result')
+		.empty()
+		.append('sending id='+$('#observations_activity_id').val()+'<br>');
+	$.ajax({
+            type: "POST",
+            url: "/webservice/getactivityobservations",
+            data: {
+            	id:$('#observations_activity_id').val()
             },
             success: function(response) {
                	$('#result')					

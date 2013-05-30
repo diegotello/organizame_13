@@ -242,4 +242,43 @@ class WebserviceController extends Zend_Controller_Action
             $this->_helper->json(array("success"=>false));
         }
     }
+
+    public function getactivityobservationsAction()
+    {
+        $this->_helper->layout()->disableLayout();        
+        $this->_helper->viewRenderer->setNoRender();
+        try
+        {
+            $now = new dateTime();
+            if($this->getRequest()->isPost())    
+            {
+                $data = $this->getRequest()->getParams();
+                if(isset($data['id']))
+                {    
+                    $id = $data['id'];
+                    $measures=execQuery("
+                            SELECT (end-start)/60 as obs
+                            FROM measure
+                            WHERE activity_id=".$id."
+                        ");
+                    $result_data = array();
+                    $i=0;
+                    foreach($measures as $me)
+                    {
+                        array_push($result_data,array('x'=>$i,'y'=>round($me['obs'],1)));
+                        $i+=1;
+                    }
+                    $this->_helper->json(array("success"=>true,'data'=>$result_data));
+                }
+                else
+                    $this->_helper->json(array("success"=>false));
+            }
+            else
+                $this->_helper->json(array("success"=>false));      
+        }
+        catch(Exception $e)
+        {
+            $this->_helper->json(array("success"=>false));
+        }
+    }
 }
