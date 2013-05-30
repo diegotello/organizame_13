@@ -171,6 +171,16 @@ function measureStatus($cid,$id,$start){
         return false;
 }
 
+function getCount($id)
+{
+    $query=execQuery("
+            SELECT AVG((end-start)/60) as est
+            FROM measure
+            WHERE activity_id=".$id."
+    ");
+    return count($query);
+}
+
 function getEstimated($id)
 {
     $query=execQuery("
