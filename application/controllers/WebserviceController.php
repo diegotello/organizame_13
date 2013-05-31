@@ -354,7 +354,7 @@ class WebserviceController extends Zend_Controller_Action
             else
             {
                 execQuery("UPDATE cronogram SET status='done' WHERE id=".$cid);
-                $this->_helper->json(array('sucess'=>true));
+                $this->_helper->json(array('success'=>true));
             }
         }
     }
