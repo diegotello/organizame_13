@@ -319,7 +319,7 @@ class WebserviceController extends Zend_Controller_Action
         $this->_helper->json(array("success"=>true,"activities"=>$result2));
     }
 
-    public function startmeasureAction()
+    public function startactivityAction()
     {
         $this->_helper->layout()->disableLayout();        
         $this->_helper->viewRenderer->setNoRender();
@@ -339,7 +339,7 @@ class WebserviceController extends Zend_Controller_Action
         }
     }
 
-    public function endmeasureAction()
+    public function endactivityAction()
     {
         $this->_helper->layout()->disableLayout();        
         $this->_helper->viewRenderer->setNoRender();
