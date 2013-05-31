@@ -319,4 +319,44 @@ class WebserviceController extends Zend_Controller_Action
         $this->_helper->json(array("success"=>true,"activities"=>$result2));
     }
 
+    public function startmeasureAction()
+    {
+        $this->_helper->layout()->disableLayout();        
+        $this->_helper->viewRenderer->setNoRender();
+        if ($this->getRequest()->isPost()) {
+            $id = $this->_getParam('id');
+            $start = date("Y-m-d H:i:s");
+            $cid = $this->_getParam('cid');
+            if(
+                execQuery("INSERT INTO measure(cronogram_id,activity_id,start,end,status) VALUES (".$cid.",".$id.",".strtotime($start).",".strtotime($start).",'on_measure')")=== false
+            )
+                $this->_helper->json(array('success'=>false));
+            else
+            {
+                execQuery("UPDATE cronogram SET status='doing' WHERE id=".$cid);
+                $this->_helper->json(array('success'=>true));
+            }
+        }
+    }
+
+    public function endmeasureAction()
+    {
+        $this->_helper->layout()->disableLayout();        
+        $this->_helper->viewRenderer->setNoRender();
+        if ($this->getRequest()->isPost()) {
+            $id = $this->_getParam('id');
+            $end = date("Y-m-d H:i:s");
+            $cid = $this->_getParam('cid');
+            if(
+                execQuery("UPDATE measure SET end = ".strtotime($end).",status = 'done' WHERE activity_id=".$id." AND cronogram_id=".$cid." AND status='on_measure'")=== false
+            )
+                $this->_helper->json(array('success'=>false));
+            else
+            {
+                execQuery("UPDATE cronogram SET status='done' WHERE id=".$cid);
+                $this->_helper->json(array('sucess'=>true));
+            }
+        }
+    }
+
 }
