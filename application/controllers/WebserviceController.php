@@ -296,4 +296,27 @@ class WebserviceController extends Zend_Controller_Action
         }
     }
 
+    public function gettodayactivitiesAction()
+    {
+        $this->_helper->layout()->disableLayout();        
+        $this->_helper->viewRenderer->setNoRender();
+        $id = $this->_getParam('id');
+        $result = execQuery("
+                    SELECT a.id, a.name, a.description, c.start, at.name atname, c.id as cid
+                    FROM cronogram as c, activity as a, activitytype as at
+                    WHERE c.day='".date("d-m-y")."' 
+                          AND c.user_id=".$id."
+                          AND c.activity_id=a.id
+                          AND a.activitytype_id=at.id
+                    ORDER BY c.start
+                 ");
+        $result2 = array();
+        foreach($result as $r)
+        {
+            $r['atname']=getActivityType_TypeName($r['atname'])." / ".getActivityType_RegisterName($r['atname']);
+            array_push($result2,$r);            
+        }
+        $this->_helper->json(array("success"=>true,"activities"=>$result2));
+    }
+
 }
